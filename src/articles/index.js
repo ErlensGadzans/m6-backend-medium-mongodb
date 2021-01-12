@@ -29,7 +29,7 @@ articlesRouter.post("/", async (req, res, next) => {
   try {
     const newArticle = new ArticleModel(req.body); //creating instance (piemērs) from the req body
     await newArticle.save();
-    res.status(201).send();
+    res.status(201).send("Article has been added.");
   } catch (error) {
     console.log(error);
     next(error);
