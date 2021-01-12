@@ -55,5 +55,21 @@ articlesRouter.put("/:id", async (req, res, next) => {
 });
 
 // DELETE /articles/:id => delete the article with the given id
+articlesRouter.delete("/:id", async (req, res, next) => {
+  try {
+    const article = await ArticleModel.findByIdAndDelete(req.params.id);
+    if (article) {
+      res.send("Article has been deleted!");
+    } else {
+      const error = new Error(
+        `Article with this id: ${req.params.id} has not been found.`
+      );
+      next(error);
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
 
 module.exports = articlesRouter;
