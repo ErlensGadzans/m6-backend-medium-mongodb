@@ -37,6 +37,23 @@ articlesRouter.post("/", async (req, res, next) => {
 });
 
 // PUT /articles/:id => edit the article with the given id
+articlesRouter.put("/:id", async (req, res, next) => {
+  try {
+    const article = await ArticleModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        runValidators: true,
+        new: true,
+      }
+    );
+    res.send("Changes has been added.");
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
 // DELETE /articles/:id => delete the article with the given id
 
 module.exports = articlesRouter;
