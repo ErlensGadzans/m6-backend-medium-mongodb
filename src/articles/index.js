@@ -1,5 +1,6 @@
 const express = require("express");
 const ArticleModel = require("./schema.js");
+const mongoose = require("mongoose");
 
 const articlesRouter = express.Router();
 
@@ -86,7 +87,17 @@ articlesRouter.get("/:id/reviews", async (req, res, next) => {
 //     GET /articles/:id/reviews/:reviewId => returns a single review for the specified article
 articlesRouter.get("/:id/reviews/:reviewId", async (req, res, next) => {
   try {
-    const { reviews } = await ArticleModel.findById(req.params.id);
+    const { reviews } = await ArticleModel.findOne(
+      {
+        _id: mongoose.Types.ObjectId(req.params.id), //using mangoose to find object by id (converting string into object)
+      },
+      {
+        reviews: {
+          $elemMatch: { _id: mongoose.Types.ObjectId(req.params.reviewId) },
+        },
+      }
+    );
+    res.status(200).send(reviews);
   } catch (error) {
     console.log(error);
     next(error);
