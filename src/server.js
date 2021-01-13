@@ -5,7 +5,7 @@ const listEndpoints = require("express-list-endpoints");
 const mongoose = require("mongoose");
 
 const articlesRouter = require("./articles");
-const reviewsRouter = require("./reviews");
+// const reviewsRouter = require("./reviews");
 
 const server = express();
 
@@ -14,7 +14,7 @@ const port = process.env.PORT || 3077;
 server.use(express.json());
 
 server.use("/articles", articlesRouter);
-server.use("/reviews", reviewsRouter);
+// server.use("/reviews", reviewsRouter);
 
 server.get("/", (req, res, next) => {
   res.send("This server is running");

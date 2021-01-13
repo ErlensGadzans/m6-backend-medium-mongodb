@@ -72,4 +72,25 @@ articlesRouter.delete("/:id", async (req, res, next) => {
   }
 });
 
+//     GET /articles/:id/reviews => returns all the reviews for the specified article
+//     GET /articles/:id/reviews/:reviewId => returns a single review for the specified article
+//     POST /articles/:id => adds a new review for the specified article
+articlesRouter.post("/:id/reviews", async (req, res, next) => {
+  try {
+    const review = req.body;
+    const newReview = await ArticleModel.findByIdAndUpdate(
+      req.params.id,
+      { $push: { reviews: review } },
+      { runValidators: true, new: true }
+    );
+    res.send("Review has been added.", newReview);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+//     PUT /articles/:id/reviews/:reviewId => edit the review belonging to the specified article
+//     DELETE /articles/:id/reviews/:reviewId => delete the review belonging to the specified article
+
 module.exports = articlesRouter;

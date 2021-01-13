@@ -11,6 +11,12 @@ const articleShema = new Schema(
       img: String,
     },
     cover: String,
+    reviews: [
+      {
+        text: String,
+        user: String,
+      },
+    ],
   },
   {
     timestamps: true,
