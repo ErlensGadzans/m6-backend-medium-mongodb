@@ -121,6 +121,30 @@ articlesRouter.post("/:id/reviews", async (req, res, next) => {
 });
 
 //     PUT /articles/:id/reviews/:reviewId => edit the review belonging to the specified article
+articlesRouter.put("/:id/reviews/:reviewId", async (req, res, next) => {
+  try {
+    const review = await ArticleModel.findOne(
+      { _id: mongoose.Types.ObjectId(req.params.id) },
+      { $elemMatch: { _id: mongoose.Types.ObjectId(req.params.reviewId) } } //find review by using mongoose
+    );
+
+    const reviewInArray = review[0];
+
+    const updatedReview = { ...reviewInArray, ...req.body }; // merging current review with new information
+
+    const updatedReview1 = await ArticleModel.findOneAndUpdate(
+      {
+        _id: mongoose.Types.ObjectId(req.params.id),
+        "review._id": mongoose.Types.ObjectId(req.params.reviewId),
+      },
+      { $set: { "review.$": updatedReview } }
+    );
+    res.status(204).send(updatedReview1);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
 
 //     DELETE /articles/:id/reviews/:reviewId => delete the review belonging to the specified article
 articlesRouter.delete("/:id/reviews/:reviewId", async (req, res, next) => {
