@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const cors = require("cors");
 dotenv.config();
 const listEndpoints = require("express-list-endpoints");
 const mongoose = require("mongoose");
@@ -12,6 +13,7 @@ const server = express();
 const port = process.env.PORT || 3077;
 
 server.use(express.json());
+server.use(cors());
 
 server.use("/articles", articlesRouter);
 // server.use("/reviews", reviewsRouter);

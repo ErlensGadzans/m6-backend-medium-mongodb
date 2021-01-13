@@ -84,6 +84,15 @@ articlesRouter.get("/:id/reviews", async (req, res, next) => {
 });
 
 //     GET /articles/:id/reviews/:reviewId => returns a single review for the specified article
+articlesRouter.get("/:id/reviews/:reviewId", async (req, res, next) => {
+  try {
+    const { reviews } = await ArticleModel.findById(req.params.id);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
 //     POST /articles/:id => adds a new review for the specified article
 articlesRouter.post("/:id/reviews", async (req, res, next) => {
   try {
@@ -93,7 +102,7 @@ articlesRouter.post("/:id/reviews", async (req, res, next) => {
       { $push: { reviews: review } },
       { runValidators: true, new: true }
     );
-    res.send("Review has been added.", newReview);
+    res.status(201).send({ newReview });
   } catch (error) {
     console.log(error);
     next(error);
