@@ -73,6 +73,16 @@ articlesRouter.delete("/:id", async (req, res, next) => {
 });
 
 //     GET /articles/:id/reviews => returns all the reviews for the specified article
+articlesRouter.get("/:id/reviews", async (req, res, next) => {
+  try {
+    const { reviews } = await ArticleModel.findById(req.params.id);
+    res.send(reviews);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
 //     GET /articles/:id/reviews/:reviewId => returns a single review for the specified article
 //     POST /articles/:id => adds a new review for the specified article
 articlesRouter.post("/:id/reviews", async (req, res, next) => {
