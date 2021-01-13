@@ -121,6 +121,18 @@ articlesRouter.post("/:id/reviews", async (req, res, next) => {
 });
 
 //     PUT /articles/:id/reviews/:reviewId => edit the review belonging to the specified article
+
 //     DELETE /articles/:id/reviews/:reviewId => delete the review belonging to the specified article
+articlesRouter.delete("/:id/reviews/:reviewId", async (req, res, next) => {
+  try {
+    const deleteReview = await ArticleModel.findByIdAndUpdate(req.params.id, {
+      $pull: { reviews: { _id: mongoose.Types.ObjectId(req.params.reviewId) } },
+    });
+    res.status(204).send(deleteReview);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
 
 module.exports = articlesRouter;
