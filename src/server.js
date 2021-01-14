@@ -6,7 +6,7 @@ const listEndpoints = require("express-list-endpoints");
 const mongoose = require("mongoose");
 
 const articlesRouter = require("./articles");
-// const reviewsRouter = require("./reviews");
+const usersRouter = require("./users");
 
 const server = express();
 
@@ -16,7 +16,7 @@ server.use(express.json());
 server.use(cors());
 
 server.use("/articles", articlesRouter);
-// server.use("/reviews", reviewsRouter);
+server.use("/users", usersRouter);
 
 server.get("/", (req, res, next) => {
   res.send("This server is running");

@@ -123,21 +123,26 @@ articlesRouter.post("/:id/reviews", async (req, res, next) => {
 //     PUT /articles/:id/reviews/:reviewId => edit the review belonging to the specified article
 articlesRouter.put("/:id/reviews/:reviewId", async (req, res, next) => {
   try {
-    const review = await ArticleModel.findOne(
+    const { reviews } = await ArticleModel.findOne(
       { _id: mongoose.Types.ObjectId(req.params.id) },
-      { $elemMatch: { _id: mongoose.Types.ObjectId(req.params.reviewId) } } //find review by using mongoose
+      {
+        reviews: {
+          $elemMatch: { _id: mongoose.Types.ObjectId(req.params.reviewId) },
+        },
+      } //find review by using mongoose
     );
 
-    const reviewInArray = review[0];
+    const reviewInArray = reviews[0];
 
     const updatedReview = { ...reviewInArray, ...req.body }; // merging current review with new information
+    console.log(reviewInArray);
 
     const updatedReview1 = await ArticleModel.findOneAndUpdate(
       {
         _id: mongoose.Types.ObjectId(req.params.id),
-        "review._id": mongoose.Types.ObjectId(req.params.reviewId),
+        "reviews._id": mongoose.Types.ObjectId(req.params.reviewId),
       },
-      { $set: { "review.$": updatedReview } }
+      { $set: { "reviews.$": updatedReview } }
     );
     res.status(204).send(updatedReview1);
   } catch (error) {
