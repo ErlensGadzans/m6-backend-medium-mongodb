@@ -7,7 +7,7 @@ const articlesRouter = express.Router();
 // GET /articles => returns the list of articles
 articlesRouter.get("/", async (req, res, next) => {
   try {
-    const articles = await ArticleModel.find();
+    const articles = await ArticleModel.find().populate("authors");
     res.send(articles);
   } catch (error) {
     console.log(error);
