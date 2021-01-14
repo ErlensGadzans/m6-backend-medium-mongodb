@@ -123,28 +123,39 @@ articlesRouter.post("/:id/reviews", async (req, res, next) => {
 //     PUT /articles/:id/reviews/:reviewId => edit the review belonging to the specified article
 articlesRouter.put("/:id/reviews/:reviewId", async (req, res, next) => {
   try {
-    const { reviews } = await ArticleModel.findOne(
+    // find article wthic has id as :id and hass and review which has id as reviewId
+    const article = await ArticleModel.findOne(
       { _id: mongoose.Types.ObjectId(req.params.id) },
       {
         reviews: {
           $elemMatch: { _id: mongoose.Types.ObjectId(req.params.reviewId) },
         },
-      } //find review by using mongoose
+      }
+    );
+    // but I need index in the array for that review
+
+    const reviewIndex = article.reviews.findIndex(
+      // since  I know reviews has id and their data type is ObjectId but I have review id to compare as  string
+      // since I cant compare different data types I convert ObjectId to string
+      (review) => review._id.toString() === req.params.reviewId
     );
 
-    const reviewInArray = reviews[0];
+    // find the review in array with the index
+    const reviewInArray = article.reviews[reviewIndex];
 
-    const updatedReview = { ...reviewInArray, ...req.body }; // merging current review with new information
-    console.log(reviewInArray);
+    // copy everything from found review  and overwrite my changes
 
-    const updatedReview1 = await ArticleModel.findOneAndUpdate(
-      {
-        _id: mongoose.Types.ObjectId(req.params.id),
-        "reviews._id": mongoose.Types.ObjectId(req.params.reviewId),
-      },
-      { $set: { "reviews.$": updatedReview } }
-    );
-    res.status(204).send(updatedReview1);
+    const updatedReview = { ...reviewInArray._doc, ...req.body };
+
+    // replace the specified review with updated review
+
+    article.reviews[reviewIndex] = updatedReview;
+
+    // update article with updated review
+
+    await article.update({ reviews: article.reviews });
+
+    res.send(article);
   } catch (error) {
     console.log(error);
     next(error);
